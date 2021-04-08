@@ -10,6 +10,12 @@ public:
     Nod* prev;
     Nod() : data(0), next(NULL), prev(NULL)
     {};
+    ~Nod()
+    {
+        data = 0;
+        next = NULL;
+        prev = NULL;
+    }
 };
 
 /*
@@ -287,6 +293,6 @@ int main()
             }
         }
     }while(option==1 || option==2 || option==3 || option==4 || option==5 || option==6);
-    cout<<"\nOptiune invalida";
+    cout<<"\nOptiune invalida\n";
     return 0;
 }

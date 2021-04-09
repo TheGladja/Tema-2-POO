@@ -6,11 +6,30 @@ class Nod
 {
 public:
     int data;
-    Nod* next;
-    Nod* prev;
-    Nod() : data(0), next(NULL), prev(NULL)
+    Nod* next= new Nod;
+
+    Nod() : data(0), next(NULL)
     {};
+    Nod(int data, Nod* next);
     ~Nod()
+    {
+        data = 0;
+        next = NULL;
+    }
+};
+
+
+class Nod_Dublu
+{
+public:
+    int data;
+    Nod_Dublu* prev= new Nod_Dublu;
+    Nod_Dublu* next= new Nod_Dublu;
+
+    Nod_Dublu() :data(0), next(NULL), prev(NULL)
+    {};
+    Nod_Dublu(int data, Nod* next, Nod* prev);
+    ~Nod_Dublu()
     {
         data = 0;
         next = NULL;
@@ -18,38 +37,41 @@ public:
     }
 };
 
-/*
-class Nod_Dublu : public Nod
-{
-public:
-    Nod* prev;
-    Nod_Dublu() : prev(NULL)
-    {};
-};
-*/
-
 class LDI
 {
 protected:
-    Nod* head;
-    Nod* curr;
-    Nod* temp;
+    Nod_Dublu* head=new Nod_Dublu;
+    Nod_Dublu* curr=new Nod_Dublu;
+    Nod_Dublu* temp=new Nod_Dublu;
 
 public:
     LDI(): head(NULL), curr(NULL), temp(NULL)
     {};
+    LDI(Nod_Dublu* head, Nod_Dublu* curr, Nod_Dublu* temp);
     void InsertAtHead(int addData);
     void InsertAtEnd(int addData);
     void DeleteNodeLDI(int delData);
     void Print();
     void ReversePrint();
+    void SortedInsert( Nod_Dublu** head_ref, Nod_Dublu* newNode);
     void InsertionSort();
+
+    friend ostream& operator<<(ostream& out, const LDI* L);
+    friend istream& operator>>(istream& in, LDI* L);
+    bool operator=(const LDI* L) const;
+
+    ~LDI()
+    {
+        head = NULL;
+        curr = NULL;
+        temp = NULL;
+    }
 
 };
 
 void LDI::InsertAtHead(int addData)
 {
-    Nod* newNode= new Nod;
+    Nod_Dublu* newNode= new Nod_Dublu;
     newNode-> data = addData;
     newNode-> prev = NULL;
     newNode-> next = NULL;
@@ -69,7 +91,7 @@ void LDI::InsertAtHead(int addData)
 
 void LDI::InsertAtEnd(int addData)
 {
-    Nod* newNode= new Nod;
+    Nod_Dublu* newNode= new Nod_Dublu;
     newNode->data = addData;
     newNode->prev = NULL;
     newNode->next = NULL;
@@ -89,9 +111,10 @@ void LDI::InsertAtEnd(int addData)
 
 void LDI::DeleteNodeLDI(int delData)
 {
-    Nod* delPtr = NULL;
+    Nod_Dublu* delPtr = NULL;
     temp = head;
     curr = head;
+
     if(head->data==delData)
     {
         cout<<"Valoarea "<<head->data <<" a fost stearsa\n";
@@ -157,30 +180,100 @@ void LDI::ReversePrint()
     }
 }
 
+void LDI::SortedInsert( Nod_Dublu** head, Nod_Dublu* newNode)
+{
+    // if list is empty
+    if (*head == NULL)
+        *head = newNode;
+
+    // if the node is to be inserted at the beginning
+    // of the doubly linked list
+    else if ((*head)->data >= newNode->data)
+    {
+        newNode->next = *head;
+        newNode->next->prev = newNode;
+        *head = newNode;
+    }
+
+    else
+    {
+        curr = *head;
+
+        // locate the node after which the new node
+        // is to be inserted
+        while (curr->next != NULL && curr->next->data < newNode->data)
+            curr = curr->next;
+
+        /*Make the appropriate links */
+
+        newNode->next = curr->next;
+
+        // if the new node is not inserted
+        // at the end of the list
+        if (curr->next != NULL)
+            newNode->next->prev = newNode;
+
+        curr->next = newNode;
+        newNode->prev = curr;
+    }
+}
+
 void LDI::InsertionSort()
 {
+    // Initialize 'sorted' - a sorted doubly linked list
+    Nod_Dublu* sorted = NULL;
 
+    // Traverse the given doubly linked list and
+    // insert every node to 'sorted'
+    curr = head;
+    while (curr != NULL) {
+
+        // Store next for next iteration
+        Nod_Dublu* urm = curr->next;
+
+        // removing all the links so as to create 'current'
+        // as a new node for insertion
+        curr->prev = curr->next = NULL;
+
+        // insert current in 'sorted' doubly linked list
+        SortedInsert(&sorted, curr);
+
+        // Update current
+        curr = urm;
+    }
+
+    // Update head_ref to point to sorted doubly linked list
+    head = sorted;
 }
 
 ///---------------------------------------------------------------------------------------------------------------
 
 class LSI : public LDI
 {
-
+protected:
+    Nod* head= new Nod;
+    Nod* curr= new Nod;
+    Nod* temp= new Nod;
 public:
-    LSI();
-    void InsertList(int addData);
+    LSI() : LDI()
+    {};
+    LSI(Nod* head, Nod* curr, Nod* temp);
+    void InsertNode(int addData);
     void DeleteNodeLSI(int delData);
+
+    friend ostream& operator<<(ostream& out, const LSI* L);
+    friend istream& operator>>(istream& in, LSI* L);
+    bool operator=(const LSI* L) const;
+
+    ~LSI()
+    {
+        head = NULL;
+        curr = NULL;
+        temp = NULL;
+    }
 };
 
-LSI::LSI()
-{
-    head = NULL;
-    curr = NULL;
-    curr = NULL;
-}
-
-void LSI::InsertList(int addData)
+void LSI::InsertNode(int addData)
 {
     Nod* n= new Nod;
     n->next = NULL;
@@ -289,6 +382,7 @@ int main()
             {
                 cout<<"\nLista va fi afisata in ordine inversa: ";
                 L->ReversePrint();
+                cout<<"\n";
                 break;
             }
         }

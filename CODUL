@@ -11,6 +11,9 @@ public:
     Nod() : data(0), next(NULL)
     {};
     Nod(int data, Nod* next);
+
+    Nod* operator=(Nod* newNode);
+
     ~Nod()
     {
         data = 0;
@@ -18,6 +21,12 @@ public:
     }
 };
 
+Nod* Nod::operator=(Nod* newNode)
+{
+    newNode-> data = this-> data;
+    newNode-> next = this-> next;
+    return newNode;
+}
 
 class Nod_Dublu
 {
@@ -29,6 +38,9 @@ public:
     Nod_Dublu() :data(0), next(NULL), prev(NULL)
     {};
     Nod_Dublu(int data, Nod* next, Nod* prev);
+
+    Nod_Dublu* operator=(Nod_Dublu* newNode);
+
     ~Nod_Dublu()
     {
         data = 0;
@@ -36,6 +48,14 @@ public:
         prev = NULL;
     }
 };
+
+Nod_Dublu* Nod_Dublu::operator=(Nod_Dublu* newNode)
+{
+    newNode-> data = this-> data;
+    newNode-> next = this-> next;
+    newNode-> prev = this-> prev;
+    return newNode;
+}
 
 class LDI
 {
@@ -58,7 +78,7 @@ public:
 
     friend ostream& operator<<(ostream& out, const LDI* L);
     friend istream& operator>>(istream& in, LDI* L);
-    bool operator=(const LDI* L) const;
+    LDI* operator=(LDI* L);
 
     ~LDI()
     {
@@ -68,6 +88,18 @@ public:
     }
 
 };
+
+LDI* LDI::operator=(LDI* L)
+{
+    curr = head;
+    while(curr!= NULL)
+    {
+        L->InsertAtEnd(curr-> data);
+        curr = curr-> next;
+    }
+    L-> head = this-> head;
+    return L;
+}
 
 void LDI::InsertAtHead(int addData)
 {
@@ -253,7 +285,7 @@ public:
 
     friend ostream& operator<<(ostream& out, const LSI* L);
     friend istream& operator>>(istream& in, LSI* L);
-    bool operator=(const LSI* L) const;
+    LSI* operator=(LSI* L);
 
     ~LSI()
     {
@@ -262,6 +294,18 @@ public:
         temp = NULL;
     }
 };
+
+LSI* LSI::operator=(LSI* L)
+{
+    curr = head;
+    while(curr!= NULL)
+    {
+        L->InsertNode(curr-> data);
+        curr = curr-> next;
+    }
+    L->head = this->head;
+    return L;
+}
 
 void LSI::InsertNode(int addData)
 {
@@ -357,7 +401,7 @@ int main()
             }
         case 4:
             {
-                cout<<"\nLista se va sorta";
+                cout<<"\nLista se va sorta\n";
                 L->InsertionSort();
                 break;
             }

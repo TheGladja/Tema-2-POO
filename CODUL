@@ -53,7 +53,7 @@ public:
     void DeleteNodeLDI(int delData);
     void Print();
     void ReversePrint();
-    void SortedInsert( Nod_Dublu** head_ref, Nod_Dublu* newNode);
+    void SortedInsert(Nod_Dublu** head, Nod_Dublu* newNode);
     void InsertionSort();
 
     friend ostream& operator<<(ostream& out, const LDI* L);
@@ -182,67 +182,57 @@ void LDI::ReversePrint()
 
 void LDI::SortedInsert( Nod_Dublu** head, Nod_Dublu* newNode)
 {
-    // if list is empty
-    if (*head == NULL)
-        *head = newNode;
+    if(*head==NULL)
+        *head= newNode;
 
-    // if the node is to be inserted at the beginning
-    // of the doubly linked list
-    else if ((*head)->data >= newNode->data)
+    /// verificam daca nodul se poate insera la inceputul listei
+    else if((*head)->data >= newNode->data)
     {
-        newNode->next = *head;
-        newNode->next->prev = newNode;
-        *head = newNode;
+        newNode-> next= *head;
+        newNode-> next-> prev= newNode;
+        *head= newNode;
     }
-
     else
     {
         curr = *head;
 
-        // locate the node after which the new node
-        // is to be inserted
-        while (curr->next != NULL && curr->next->data < newNode->data)
-            curr = curr->next;
-
-        /*Make the appropriate links */
+        /// cautam nodul dupa care va trebui sa inseram newNode
+        while(curr-> next!= NULL && curr-> next-> data < newNode-> data)
+            curr= curr->next;
 
         newNode->next = curr->next;
 
-        // if the new node is not inserted
-        // at the end of the list
-        if (curr->next != NULL)
-            newNode->next->prev = newNode;
+        /// verificam daca newNode este inserat la urma listei
+        if(curr-> next != NULL)
+            newNode-> next-> prev= newNode;
 
-        curr->next = newNode;
-        newNode->prev = curr;
+        curr-> next= newNode;
+        newNode-> prev= curr;
     }
 }
 
 void LDI::InsertionSort()
 {
-    // Initialize 'sorted' - a sorted doubly linked list
     Nod_Dublu* sorted = NULL;
 
-    // Traverse the given doubly linked list and
-    // insert every node to 'sorted'
-    curr = head;
-    while (curr != NULL) {
+    /// parcurgem lista si inseram fiecare nod in sorted
+    curr= head;
+    while(curr!= NULL) {
 
-        // Store next for next iteration
+        /// urm va reprezenta nodul de dupa elementul curr
         Nod_Dublu* urm = curr->next;
 
-        // removing all the links so as to create 'current'
-        // as a new node for insertion
+        /// nodul curr va fi nodul unde se va insera noul nod
         curr->prev = curr->next = NULL;
 
-        // insert current in 'sorted' doubly linked list
+        /// inseram nodul curr in lista sorted
         SortedInsert(&sorted, curr);
 
-        // Update current
+        /// actualizam nodul curent
         curr = urm;
     }
 
-    // Update head_ref to point to sorted doubly linked list
+    /// actualizam nodul head
     head = sorted;
 }
 

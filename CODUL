@@ -28,14 +28,12 @@ Nod* Nod::operator=(Nod* newNode)
     return newNode;
 }
 
-class Nod_Dublu
+class Nod_Dublu : public Nod
 {
 public:
-    int data;
-    Nod_Dublu* prev= new Nod_Dublu;
-    Nod_Dublu* next= new Nod_Dublu;
+    Nod* prev= new Nod;
 
-    Nod_Dublu() :data(0), next(NULL), prev(NULL)
+    Nod_Dublu() :Nod(), prev(NULL)
     {};
     Nod_Dublu(int data, Nod* next, Nod* prev);
 
@@ -60,9 +58,9 @@ Nod_Dublu* Nod_Dublu::operator=(Nod_Dublu* newNode)
 class LDI
 {
 protected:
-    Nod_Dublu* head=new Nod_Dublu;
-    Nod_Dublu* curr=new Nod_Dublu;
-    Nod_Dublu* temp=new Nod_Dublu;
+    Nod_Dublu* head =new Nod_Dublu;
+    Nod_Dublu* curr =new Nod_Dublu;
+    Nod_Dublu* temp =new Nod_Dublu;
 
 public:
     LDI(): head(NULL), curr(NULL), temp(NULL)
@@ -95,7 +93,7 @@ LDI* LDI::operator=(LDI* L)
     while(curr!= NULL)
     {
         L->InsertAtEnd(curr-> data);
-        curr = curr-> next;
+        curr = (Nod_Dublu*)curr-> next;
     }
     L-> head = this-> head;
     return L;
@@ -132,7 +130,7 @@ void LDI::InsertAtEnd(int addData)
     {
         temp = head;
         while(temp->next!=NULL)
-            temp = temp->next;
+            temp = (Nod_Dublu*)temp->next;
         temp->next = newNode;
         newNode-> prev = temp;
 
@@ -151,7 +149,7 @@ void LDI::DeleteNodeLDI(int delData)
     {
         cout<<"Valoarea "<<head->data <<" a fost stearsa\n";
         temp = NULL;
-        head = head->next;
+        head = (Nod_Dublu*)head->next;
         head->prev = NULL;
 
     }
@@ -160,7 +158,7 @@ void LDI::DeleteNodeLDI(int delData)
     while(curr!=NULL && curr->data != delData)
     {
         temp = curr;
-        curr = curr->next;
+        curr = (Nod_Dublu*)curr->next;
     }
     if(curr == NULL)
     {
@@ -173,7 +171,7 @@ void LDI::DeleteNodeLDI(int delData)
         delPtr = curr;
         if(curr->next!=NULL)
         {
-            curr = curr->next;
+            curr = (Nod_Dublu*)curr->next;
             curr->prev = temp;
             temp->next = curr;
         }
@@ -194,7 +192,7 @@ void LDI::Print()
     while(temp!=NULL)
     {
         cout<<temp->data<<" ";
-        temp= temp-> next;
+        temp= (Nod_Dublu*)temp-> next;
     }
 }
 
@@ -204,16 +202,18 @@ void LDI::ReversePrint()
     if(temp == NULL)
         return;
     while(temp->next!=NULL)
-        temp = temp-> next;
+        temp = (Nod_Dublu*)temp-> next;
     while(temp!=NULL)
     {
         cout<<temp->data<<" ";
-        temp = temp-> prev;
+        temp = (Nod_Dublu*)temp-> prev;
     }
 }
 
 void LDI::SortedInsert( Nod_Dublu** head, Nod_Dublu* newNode)
 {
+    Nod_Dublu* aux;
+
     if(*head==NULL)
         *head= newNode;
 
@@ -221,7 +221,8 @@ void LDI::SortedInsert( Nod_Dublu** head, Nod_Dublu* newNode)
     else if((*head)->data >= newNode->data)
     {
         newNode-> next= *head;
-        newNode-> next-> prev= newNode;
+        aux = (Nod_Dublu*)newNode-> next;
+        aux -> prev= newNode;
         *head= newNode;
     }
     else
@@ -230,13 +231,17 @@ void LDI::SortedInsert( Nod_Dublu** head, Nod_Dublu* newNode)
 
         /// cautam nodul dupa care va trebui sa inseram newNode
         while(curr-> next!= NULL && curr-> next-> data < newNode-> data)
-            curr= curr->next;
+            curr= (Nod_Dublu*)curr->next;
 
         newNode->next = curr->next;
 
         /// verificam daca newNode este inserat la urma listei
         if(curr-> next != NULL)
-            newNode-> next-> prev= newNode;
+        {
+            aux = (Nod_Dublu*)newNode-> next;
+            aux -> prev= newNode;
+        }
+
 
         curr-> next= newNode;
         newNode-> prev= curr;
@@ -252,7 +257,7 @@ void LDI::InsertionSort()
     while(curr!= NULL) {
 
         /// urm va reprezenta nodul de dupa elementul curr
-        Nod_Dublu* urm = curr->next;
+        Nod_Dublu* urm = (Nod_Dublu*)curr->next;
 
         /// nodul curr va fi nodul unde se va insera noul nod
         curr->prev = curr->next = NULL;

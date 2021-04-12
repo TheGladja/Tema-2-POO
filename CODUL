@@ -112,11 +112,11 @@ void LDI::InsertAtHead(int addData)
         return;
     }
     else
-        {
-            head->prev = newNode;
-            newNode->next = head;
-            head = newNode;
-        }
+    {
+        head->prev = newNode;
+        newNode->next = head;
+        head = newNode;
+    }
 }
 
 void LDI::InsertAtEnd(int addData)
@@ -155,35 +155,35 @@ void LDI::DeleteNodeLDI(int delData)
     }
     else
     {
-    while(curr!=NULL && curr->data != delData)
-    {
-        temp = curr;
-        curr = (Nod_Dublu*)curr->next;
-    }
-    if(curr == NULL)
-    {
-        cout<<"Valoarea "<<delData<<" nu este in lista\n";
-        delete delPtr;
-    }
-
-    else
-    {
-        delPtr = curr;
-        if(curr->next!=NULL)
+        while(curr!=NULL && curr->data != delData)
         {
+            temp = curr;
             curr = (Nod_Dublu*)curr->next;
-            curr->prev = temp;
-            temp->next = curr;
         }
+        if(curr == NULL)
+        {
+            cout<<"Valoarea "<<delData<<" nu este in lista\n";
+            delete delPtr;
+        }
+
         else
         {
-            temp->next = NULL;
-            curr = NULL;
+            delPtr = curr;
+            if(curr->next!=NULL)
+            {
+                curr = (Nod_Dublu*)curr->next;
+                curr->prev = temp;
+                temp->next = curr;
+            }
+            else
+            {
+                temp->next = NULL;
+                curr = NULL;
+            }
+            delete delPtr;
+            cout<<"Valoarea "<< delData<<" a fost stearsa\n";
         }
-        delete delPtr;
-        cout<<"Valoarea "<< delData<<" a fost stearsa\n";
     }
-}
 }
 
 void LDI::Print()
@@ -254,7 +254,8 @@ void LDI::InsertionSort()
 
     /// parcurgem lista si inseram fiecare nod in sorted
     curr= head;
-    while(curr!= NULL) {
+    while(curr!= NULL)
+    {
 
         /// urm va reprezenta nodul de dupa elementul curr
         Nod_Dublu* urm = (Nod_Dublu*)curr->next;
@@ -275,18 +276,19 @@ void LDI::InsertionSort()
 
 ///---------------------------------------------------------------------------------------------------------------
 
-class LSI : public LDI
+class LSI: public LDI
 {
 protected:
     Nod* head= new Nod;
     Nod* curr= new Nod;
     Nod* temp= new Nod;
 public:
-    LSI() : LDI()
+    LSI() : head(NULL), curr(NULL), temp(NULL)
     {};
     LSI(Nod* head, Nod* curr, Nod* temp);
     void InsertNode(int addData);
     void DeleteNodeLSI(int delData);
+    void PrintLSI();
 
     friend ostream& operator<<(ostream& out, const LSI* L);
     friend istream& operator>>(istream& in, LSI* L);
@@ -314,19 +316,19 @@ LSI* LSI::operator=(LSI* L)
 
 void LSI::InsertNode(int addData)
 {
-    Nod* n= new Nod;
-    n->next = NULL;
-    n->data = addData;
+    Nod* newNode= new Nod;
+    newNode->next = NULL;
+    newNode->data = addData;
 
     if(head!=NULL)
     {
         curr = head;
         while(curr->next!=NULL)
             curr = curr->next;
-        curr->next = n;
+        curr->next = newNode;
     }
     else
-        head = n;
+        head = newNode;
 }
 
 void LSI::DeleteNodeLSI(int delData)
@@ -351,16 +353,26 @@ void LSI::DeleteNodeLSI(int delData)
         curr = curr->next;
         temp->next = curr;
         if(delPtr == head)
-            {
-                head = head->next;
-                temp = NULL;
-            }
+        {
+            head = head->next;
+            temp = NULL;
+        }
         delete delPtr;
         cout<<"Valoarea "<< delData<<" a fost stearsa\n";
     }
 }
 
-void Optiuni()
+void LSI::PrintLSI()
+{
+    temp = head;
+    while(temp!=NULL)
+    {
+        cout<<temp-> data<<" ";
+        temp = temp-> next;
+    }
+}
+
+void OptiuniLDI()
 {
     cout<<"\nTastati 1 pentru a adauga un element la inceputul listei;";
     cout<<"\nTastati 2 pentru a adauga un element la sfarsitul listei;";
@@ -370,33 +382,80 @@ void Optiuni()
     cout<<"\nTastati 6 pentru a afisa lista in ordine inversa.";
 }
 
+void OptiuniLSI()
+{
+    cout<<"\nTastati 1 pentru a adauga un element in lista;";
+    cout<<"\nTastati 2 pentru a sterge un element din lista;";
+    cout<<"\nTastati 3 pentru a afisa lista;";
+}
+
 int main()
 {
 
-    LDI* L = new LDI;
     int option, x;
-    do
+    cout<<"Apasa 1 pentru a lucra cu o LSI;\nApasa 2 pentru a lucra cu o LDI;\n";
+    cin>>x;
+    if(x==1)
     {
-        Optiuni();
-        cout<<"\n\nIntroduceti optiunea: ";
-        cin>>option;
-        switch (option)
+        LSI* L = new LSI;
+        do
         {
-        case 1:
+            OptiuniLSI();
+            cout<<"\n\nIntroduceti optiunea: ";
+            cin>>option;
+            switch(option)
+            {
+            case 1:
+            {
+                cout<<"\nCe valoare doriti sa inserati in lista: ";
+                cin>>x;
+                L->InsertNode(x);
+                break;
+            }
+            case 2:
+            {
+                cout<<"\nCe valoare doriti sa stergeti din lista: ";
+                cin>>x;
+                cout<<"\n";
+                L->DeleteNodeLSI(x);
+                break;
+            }
+            case 3:
+            {
+                cout<<"\nLista va fi afisata\n\n";
+                L->PrintLSI();
+                cout<<"\n";
+                break;
+            }
+            }
+        }
+        while(option == 1 || option == 2 || option == 3);
+    }
+    else
+    {
+        LDI* L = new LDI;
+        do
+        {
+            OptiuniLDI();
+            cout<<"\n\nIntroduceti optiunea: ";
+            cin>>option;
+            switch (option)
+            {
+            case 1:
             {
                 cout<<"\nCe valoare doriti sa inserati la inceput: ";
                 cin>>x;
                 L->InsertAtHead(x);
                 break;
             }
-        case 2:
+            case 2:
             {
                 cout<<"\nCe valoare doriti sa inserati la sfarsit: ";
                 cin>>x;
                 L->InsertAtEnd(x);
                 break;
             }
-        case 3:
+            case 3:
             {
                 cout<<"\nCe valoare doriti sa stergeti: ";
                 cin>>x;
@@ -404,28 +463,30 @@ int main()
                 cout<<"\n";
                 break;
             }
-        case 4:
+            case 4:
             {
                 cout<<"\nLista se va sorta\n";
                 L->InsertionSort();
                 break;
             }
-        case 5:
+            case 5:
             {
                 cout<<"\nLista va fi afisata in ordine normala: ";
                 L->Print();
                 cout<<"\n";
                 break;
             }
-        case 6:
+            case 6:
             {
                 cout<<"\nLista va fi afisata in ordine inversa: ";
                 L->ReversePrint();
                 cout<<"\n";
                 break;
             }
+            }
         }
-    }while(option==1 || option==2 || option==3 || option==4 || option==5 || option==6);
+        while(option==1 || option==2 || option==3 || option==4 || option==5 || option==6);
+    }
     cout<<"\nOptiune invalida\n";
     return 0;
 }
